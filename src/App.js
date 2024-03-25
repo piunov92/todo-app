@@ -1,70 +1,35 @@
-import React from 'react'
+import React, { useState } from 'react'
+import NewTaskForm from './components/new-task-form'
+import TaskList from './components/task-list'
+import Footer from './components/footer'
 import './App.css'
 
 function App() {
+  const data = [
+    { id: 1, text: 'task id 1' },
+    { id: 2, text: 'task id 2' },
+    { id: 3, text: 'task id 3' },
+  ]
+
+  const [currentData, setData] = useState(data)
+
+  const deleteTodo = (id) => {
+    setData((currentData) => {
+      const i = currentData.findIndex((todo) => todo.id === id)
+      return [...currentData.slice(0, i), ...currentData.slice(i + 1)]
+    })
+  }
+
   return (
     <>
       <section className="todoapp">
         <header className="header">
           <h1>todos</h1>
-          <input
-            className="new-todo"
-            placeholder="What needs to be done?"
-            autoFocus
-          />
+          <NewTaskForm />
         </header>
         <section className="main">
-          <ul className="todo-list">
-            <li className="completed">
-              <div className="view">
-                <input className="toggle" type="checkbox" />
-                <label>
-                  <span className="description">Completed task</span>
-                  <span className="created">created 17 seconds ago</span>
-                </label>
-                <button className="icon icon-edit"></button>
-                <button className="icon icon-destroy"></button>
-              </div>
-            </li>
-            <li className="editing">
-              <div className="view">
-                <input className="toggle" type="checkbox" />
-                <label>
-                  <span className="description">Editing task</span>
-                  <span className="created">created 5 minutes ago</span>
-                </label>
-                <button className="icon icon-edit"></button>
-                <button className="icon icon-destroy"></button>
-              </div>
-              <input type="text" className="edit" value="Editing task" />
-            </li>
-            <li>
-              <div className="view">
-                <input className="toggle" type="checkbox" />
-                <label>
-                  <span className="description">Active task</span>
-                  <span className="created">created 5 minutes ago</span>
-                </label>
-                <button className="icon icon-edit"></button>
-                <button className="icon icon-destroy"></button>
-              </div>
-            </li>
-          </ul>
-          <footer className="footer">
-            <span className="todo-count">1 items left</span>
-            <ul className="filters">
-              <li>
-                <button className="selected">All</button>
-              </li>
-              <li>
-                <button>Active</button>
-              </li>
-              <li>
-                <button>Completed</button>
-              </li>
-            </ul>
-            <button className="clear-completed">Clear completed</button>
-          </footer>
+          <TaskList todos={currentData} onDeleted={deleteTodo} />
+          <Footer />
         </section>
       </section>
     </>
