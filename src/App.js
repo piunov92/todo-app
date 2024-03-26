@@ -1,17 +1,32 @@
-import React, { useState } from 'react'
+import React from 'react'
 import NewTaskForm from './components/new-task-form'
 import TaskList from './components/task-list'
 import Footer from './components/footer'
 import './App.css'
 
 function App() {
-  const data = [
-    { id: 1, text: 'task id 1' },
-    { id: 2, text: 'task id 2' },
-    { id: 3, text: 'task id 3' },
-  ]
+  const [currentData, setData] = React.useState([])
 
-  const [currentData, setData] = useState(data)
+  const completedTodo = (id) => {
+    setData(
+      currentData.map((data) => {
+        if (data.id === id) {
+          data.isCompleted = !data.isCompleted
+        }
+        return data
+      })
+    )
+  }
+
+  const addTodo = (text) => {
+    const newTodo = {
+      id: Math.random().toString(16).slice(2),
+      isCompleted: false,
+      isEdited: false,
+      text,
+    }
+    setData((currentData) => [...currentData, newTodo])
+  }
 
   const deleteTodo = (id) => {
     setData((currentData) => {
@@ -20,15 +35,32 @@ function App() {
     })
   }
 
+  const editTodo = (id) => {
+    setData(
+      currentData.map((data) => {
+        if (data.id === id) {
+          data.text = 'hello'
+          data.isEdited = !data.isEdited
+        }
+        return data
+      })
+    )
+  }
+
   return (
     <>
       <section className="todoapp">
         <header className="header">
           <h1>todos</h1>
-          <NewTaskForm />
+          <NewTaskForm newTodo={addTodo} />
         </header>
         <section className="main">
-          <TaskList todos={currentData} onDeleted={deleteTodo} />
+          <TaskList
+            todos={currentData}
+            onDeleted={deleteTodo}
+            onEdited={editTodo}
+            onCompleted={completedTodo}
+          />
           <Footer />
         </section>
       </section>
